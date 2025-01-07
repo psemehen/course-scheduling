@@ -36,6 +36,10 @@ group :development, :test do
   gem "standard"
 
   gem "pry"
+
+  gem 'rspec-rails', '~> 7.0.0'
+  gem "test-prof", "~> 1.0"
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
