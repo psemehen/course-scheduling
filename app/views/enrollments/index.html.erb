@@ -1,0 +1,45 @@
+<h1><%= @student.full_name %>'s Enrollments</h1>
+
+<h2>Current Enrollments</h2>
+<% if @enrollments.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Teacher</th>
+        <th>Days of week</th>
+        <th>Start time</th>
+        <th>End time</th>
+        <th>Duration</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render @enrollments %>
+    </tbody>
+  </table>
+<% else %>
+  <p>Not enrolled in any sections.</p>
+<% end %>
+
+<h2>Available Sections</h2>
+<% if @available_sections.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Teacher</th>
+        <th>Days of week</th>
+        <th>Start time</th>
+        <th>End time</th>
+        <th>Duration</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: 'available_section', collection: @available_sections %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No available sections.</p>
+<% end %>

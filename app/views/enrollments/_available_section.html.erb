@@ -1,0 +1,15 @@
+<tr>
+  <td><%= available_section.subject.name %></td>
+  <td><%= available_section.teacher.full_name %></td>
+  <td><%= days_of_week_display(available_section.days_of_week) %></td>
+  <td><%= available_section.start_time.strftime("%I:%M %p") %></td>
+  <td><%= available_section.end_time.strftime("%I:%M %p") %></td>
+  <td><%= available_section.duration %> minutes
+  <td>
+    <%= form_with(model: [@student, Enrollment.new], local: true) do |f| %>
+      <%= f.hidden_field :section_id, value: available_section.id %>
+      <%= f.hidden_field :subject_id, value: available_section.subject.id %>
+      <%= f.submit 'Enroll' %>
+    <% end %>
+  </td>
+</tr>

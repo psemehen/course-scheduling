@@ -38,5 +38,7 @@ module CourseScheduling
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.assets.pipeline = :propshaft
   end
 end

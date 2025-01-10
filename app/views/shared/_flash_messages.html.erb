@@ -1,0 +1,5 @@
+<% flash.each do |type, message| %>
+  <div class="flash-message <%= type == "success" ? 'flash-success' : 'flash-error' %>" role="alert">
+    <span class="message"><%= message %></span>
+  </div>
+<% end %>
