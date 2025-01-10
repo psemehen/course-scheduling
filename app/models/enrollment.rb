@@ -3,6 +3,11 @@ class Enrollment < ApplicationRecord
   belongs_to :subject
   belongs_to :section
 
+  delegate :full_name, to: :student, prefix: true
+  delegate :full_name, to: :teacher, prefix: true
+  delegate :name, :start_time, :end_time, :days_of_week, :duration, to: :section, prefix: true
+  delegate :name, to: :subject, prefix: true
+
   validates :student_id, uniqueness: {
     scope: [:subject_id, :section_id],
     message: "is already enrolled in this section of the subject"
