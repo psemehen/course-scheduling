@@ -1,9 +1,9 @@
 class Section < ApplicationRecord
+  enum :days_of_week, {mon_wed_fri: 0, tue_thu: 1, everyday: 2}
+
   belongs_to :teacher
   belongs_to :subject
   belongs_to :classroom
-
-  enum :days_of_week, {mon_wed_fri: 0, tue_thu: 1, everyday: 2}
 
   validates :start_time, :end_time, :duration, :days_of_week, presence: true
   validates :duration, inclusion: {in: [50, 80], message: "must be either 50 or 80 minutes"}

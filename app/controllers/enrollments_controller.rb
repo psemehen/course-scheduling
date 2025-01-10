@@ -61,10 +61,6 @@ class EnrollmentsController < ApplicationController
     @enrollment ||= student.enrollments.find(params[:id])
   end
 
-  def section
-    @section ||= Section.find(enrollment_params[:section_id])
-  end
-
   def enrollment_params
     params.require(:enrollment).permit(:section_id, :subject_id)
   end

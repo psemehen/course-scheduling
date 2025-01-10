@@ -27,6 +27,8 @@ class Enrollment < ApplicationRecord
   private
 
   def no_schedule_overlap
+    return unless section && student
+
     overlapping_enrollment = student.enrollments.overlapping_with(section, id).first
 
     return unless overlapping_enrollment
