@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_08_022251) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_08_213141) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,7 +29,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_022251) do
     t.datetime "updated_at", null: false
     t.bigint "section_id"
     t.index ["section_id"], name: "index_enrollments_on_section_id"
-    t.index ["student_id", "subject_id"], name: "index_enrollments_on_student_id_and_subject_id", unique: true
+    t.index ["student_id", "subject_id", "section_id"], name: "index_enrollments_on_student_subject_and_section", unique: true
     t.index ["student_id"], name: "index_enrollments_on_student_id"
     t.index ["subject_id"], name: "index_enrollments_on_subject_id"
   end

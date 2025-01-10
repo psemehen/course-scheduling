@@ -9,8 +9,11 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require "rspec/rails"
-# Add additional requires below this line. Rails is not loaded until this point!
+require "simplecov"
 
+SimpleCov.start "rails"
+
+Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -76,6 +79,5 @@ RSpec.configure do |config|
     end
   end
 
-  require "test_prof/recipes/rspec/let_it_be"
-  require "test_prof/recipes/rspec/after_all"
+  config.include FactoryBot::Syntax::Methods
 end

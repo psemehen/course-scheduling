@@ -1,0 +1,6 @@
+test_runner: rspec
+test_directory: spec
+test_file_pattern: '**/*_spec.rb'
+profiling_interval: 10
+profiling_output_file: test-prof-report.json
+profiling_threshold: 5
