@@ -1,5 +1,18 @@
 class Section < ApplicationRecord
-  enum :days_of_week, {mon_wed_fri: 0, tue_thu: 1, everyday: 2}
+  enum :days_of_week, {everyday: 0, mon_wed_fri: 1, tue_thu: 2}
+
+  scope :overlapping_sections, ->(section) {
+    overlapping_days_of_week(section).overlapping_time(section)
+  }
+
+  scope :overlapping_days_of_week, ->(section) {
+    section.everyday? ? all : where(days_of_week: [section.days_of_week, Section.days_of_weeks[:everyday]])
+  }
+
+  scope :overlapping_time, ->(section) {
+    where("(sections.start_time::time < ?::time AND sections.end_time::time > ?::time) OR (?::time < sections.end_time::time AND ?::time > sections.start_time::time)",
+      section.end_time, section.start_time, section.start_time, section.end_time)
+  }
 
   belongs_to :teacher
   belongs_to :subject

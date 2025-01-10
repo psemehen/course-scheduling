@@ -17,11 +17,7 @@ class Enrollment < ApplicationRecord
   scope :overlapping_with, ->(section, exclude_id = nil) {
     joins(:section)
       .where.not(id: exclude_id)
-      .where("sections.days_of_week = ? OR sections.days_of_week = ? OR ? = ?",
-        Section.days_of_weeks[section.days_of_week], Section.days_of_weeks[:everyday],
-        Section.days_of_weeks[:everyday], Section.days_of_weeks[section.days_of_week])
-      .where("(sections.start_time < ? AND sections.end_time > ?) OR (? < sections.end_time AND ? > sections.start_time)",
-        section.end_time, section.start_time, section.start_time, section.end_time)
+      .where(section: Section.overlapping_sections(section))
   }
 
   private

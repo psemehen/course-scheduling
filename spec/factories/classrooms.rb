@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :classroom do
-    name { "Room 2" }
+    sequence(:name) { |n| "Room #{n}" }
     capacity { 40 }
   end
 end

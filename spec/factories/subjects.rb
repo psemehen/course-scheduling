@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :subject do
-    name { "Math" }
+    sequence(:name) { |n| "Subject #{n}" }
   end
 end

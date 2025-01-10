@@ -4,5 +4,5 @@ class Subject < ApplicationRecord
   has_many :enrollments, dependent: :destroy
   has_many :students, through: :enrollments
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 end
