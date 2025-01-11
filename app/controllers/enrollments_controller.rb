@@ -1,6 +1,6 @@
 class EnrollmentsController < ApplicationController
   def index
-    @enrollments = student.enrollments.includes(section: [:subject, :teacher])
+    @enrollments = student.enrollments.includes(:subject, section: :teacher)
     @available_sections = Section.includes(:subject, :teacher).where.not(id: student.section_ids)
 
     respond_to do |format|
