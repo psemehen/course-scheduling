@@ -1,30 +1,29 @@
 module Enrollments
   class DownloadsController < ApplicationController
     def create
-      send_data pdf,
-        filename: "#{student.full_name} schedule.pdf",
-        type: "application/pdf",
+      format = params[:format] || "pdf"
+      result = Enrollments::ScheduleDownloadService.call(student, format)
+
+      send_data result[:content],
+        filename: result[:filename],
+        type: result[:type],
         disposition: "attachment"
+    rescue ArgumentError => e
+      # log to sentry/other monitoring system, use I18n for translations
+      Rails.logger.error "Invalid format requested: #{e.message}"
+      flash[:error] = "Invalid format requested. Please try again."
+      redirect_to student_enrollments_path(student)
+    rescue => e
+      # log to sentry/other monitoring system
+      flash[:error] = "An error occurred while generating the schedule. Please try again."
+      Rails.logger.error "An error occurred while generating the schedule: #{e.message}"
+      redirect_to student_enrollments_path(student)
     end
 
     private
 
     def student
       @student ||= Student.find(params[:student_id])
-    end
-
-    def enrollments
-      @enrollments ||= student.enrollments.includes(:subject, section: [:teacher, :classroom])
-    end
-
-    def pdf
-      WickedPdf.new.pdf_from_string(
-        render_to_string(
-          template: "enrollments/downloads/schedule",
-          layout: "pdf",
-          locals: {student: student, enrollments: enrollments}
-        )
-      )
     end
   end
 end
