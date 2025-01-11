@@ -2,7 +2,9 @@ module Enrollments
   class DownloadsController < ApplicationController
     def create
       format = params[:format] || "pdf"
-      result = Enrollments::ScheduleDownloadService.call(student, format)
+      result = Rails.cache.fetch(cache_key(format), expires_in: 1.hour) do
+        Enrollments::ScheduleDownloadService.call(student, format)
+      end
 
       send_data result[:content],
         filename: result[:filename],
@@ -24,6 +26,11 @@ module Enrollments
 
     def student
       @student ||= Student.find(params[:student_id])
+    end
+
+    def cache_key(format)
+      enrollments_updated_at = student.enrollments.maximum(:updated_at).to_i
+      "student_schedule/#{student.id}-#{student.updated_at.to_i}-#{enrollments_updated_at}-#{format}"
     end
   end
 end
