@@ -3,7 +3,7 @@ class CreateEnrollments < ActiveRecord::Migration[8.0]
     create_table :enrollments do |t|
       t.string :grade
       t.references :subject, null: false, foreign_key: true
-      t.references :student, null: false, foreign_key: true
+      t.references :student, type: :uuid, null: false, foreign_key: true
       t.references :section, null: false, foreign_key: true
 
       t.timestamps

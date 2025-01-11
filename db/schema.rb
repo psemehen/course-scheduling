@@ -13,6 +13,7 @@
 ActiveRecord::Schema[8.0].define(version: 2025_01_08_013420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgcrypto"
 
   create_table "classrooms", force: :cascade do |t|
     t.string "name", null: false
@@ -25,7 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_013420) do
   create_table "enrollments", force: :cascade do |t|
     t.string "grade"
     t.bigint "subject_id", null: false
-    t.bigint "student_id", null: false
+    t.uuid "student_id", null: false
     t.bigint "section_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -50,7 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_013420) do
     t.index ["teacher_id"], name: "index_sections_on_teacher_id"
   end
 
-  create_table "students", force: :cascade do |t|
+  create_table "students", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "email", null: false
