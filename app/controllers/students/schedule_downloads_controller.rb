@@ -1,9 +1,9 @@
-module Enrollments
-  class DownloadsController < ApplicationController
-    def create
+module Students
+  class ScheduleDownloadsController < ApplicationController
+    def download
       format = params[:format] || "pdf"
       result = Rails.cache.fetch(cache_key(format), expires_in: 1.hour) do
-        Enrollments::ScheduleDownloadService.call(student, format)
+        Students::ScheduleDownloadService.call(student, format)
       end
 
       send_data result[:content],

@@ -13,9 +13,11 @@ Rails.application.routes.draw do
   root "students#index"
 
   resources :students, only: :index do
-    resources :enrollments, only: [:index, :create, :destroy] do
-      collection do
-        get "download_pdf", to: "enrollments/downloads#create", as: :download_pdf
+    resources :enrollments, only: [:index, :create, :destroy]
+
+    scope module: :students do
+      resources :schedule_downloads, only: [] do
+        get :download, on: :collection
       end
     end
   end

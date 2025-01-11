@@ -1,4 +1,4 @@
-module Enrollments
+module Students
   class PdfScheduleStrategy < BaseService
     def initialize(student)
       @student = student
@@ -19,7 +19,7 @@ module Enrollments
     def pdf_content
       WickedPdf.new.pdf_from_string(
         ApplicationController.render(
-          template: "enrollments/downloads/schedule",
+          template: "students/schedule_downloads/show",
           layout: "pdf",
           locals: {student: student, enrollments: enrollments}
         )

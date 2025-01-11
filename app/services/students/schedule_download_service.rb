@@ -1,4 +1,4 @@
-module Enrollments
+module Students
   class ScheduleDownloadService < BaseService
     def initialize(student, format)
       @student = student
