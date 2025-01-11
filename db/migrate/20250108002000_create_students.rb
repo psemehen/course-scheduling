@@ -1,6 +1,6 @@
 class CreateStudents < ActiveRecord::Migration[8.0]
   def change
-    enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
+    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
 
     create_table :students, id: :uuid do |t|
       t.string :first_name, null: false
