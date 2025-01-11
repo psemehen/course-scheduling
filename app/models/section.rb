@@ -1,6 +1,10 @@
 class Section < ApplicationRecord
   enum :days_of_week, {everyday: 0, mon_wed_fri: 1, tue_thu: 2}
 
+  belongs_to :teacher
+  belongs_to :subject
+  belongs_to :classroom
+
   scope :overlapping_sections, ->(section) {
     overlapping_days_of_week(section).overlapping_time(section)
   }
@@ -13,10 +17,6 @@ class Section < ApplicationRecord
     where("(sections.start_time::time < ?::time AND sections.end_time::time > ?::time) OR (?::time < sections.end_time::time AND ?::time > sections.start_time::time)",
       section.end_time, section.start_time, section.start_time, section.end_time)
   }
-
-  belongs_to :teacher
-  belongs_to :subject
-  belongs_to :classroom
 
   validates :start_time, :end_time, :duration, :days_of_week, presence: true
   validates :duration, inclusion: {in: [50, 80], message: "must be either 50 or 80 minutes"}

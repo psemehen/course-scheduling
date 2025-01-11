@@ -3,22 +3,17 @@ class Enrollment < ApplicationRecord
   belongs_to :subject
   belongs_to :section
 
-  delegate :full_name, to: :student, prefix: true
-  delegate :full_name, to: :teacher, prefix: true
-  delegate :name, :start_time, :end_time, :days_of_week, :duration, to: :section, prefix: true
-  delegate :name, to: :subject, prefix: true
+  scope :overlapping_with, ->(section, exclude_id = nil) {
+    joins(:section)
+      .where.not(id: exclude_id)
+      .where(section: Section.overlapping_sections(section))
+  }
 
   validates :student_id, uniqueness: {
     scope: [:subject_id, :section_id],
     message: "is already enrolled in this section of the subject"
   }
   validate :no_schedule_overlap
-
-  scope :overlapping_with, ->(section, exclude_id = nil) {
-    joins(:section)
-      .where.not(id: exclude_id)
-      .where(section: Section.overlapping_sections(section))
-  }
 
   private
 
