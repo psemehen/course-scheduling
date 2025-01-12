@@ -14,15 +14,14 @@ class Section < ApplicationRecord
   }
 
   scope :overlapping_time, ->(section) {
-    where("(sections.start_time::time < ?::time AND sections.end_time::time > ?::time) OR (?::time < sections.end_time::time AND ?::time > sections.start_time::time)",
+    where("(sections.start_time::time < ?::time AND sections.end_time::time > ?::time) OR " \
+          "(?::time < sections.end_time::time AND ?::time > sections.start_time::time)",
       section.end_time, section.start_time, section.start_time, section.end_time)
   }
 
   validates :start_time, :end_time, :duration, :days_of_week, presence: true
   validates :duration, inclusion: {in: [50, 80], message: "must be either 50 or 80 minutes"}
-  validate :validate_start_time
-  validate :validate_end_time
-  validate :end_time_after_start_time
+  validate :validate_start_time, :validate_end_time, :end_time_after_start_time
 
   private
 
