@@ -29,3 +29,10 @@
 
 en:
   hello: "Hello world"
+
+  errors:
+    messages:
+      enrollment_overlap: "overlaps with %{subject} on %{days} from %{start_time} to %{end_time}"
+  time:
+    formats:
+      time: "%I:%M %p"

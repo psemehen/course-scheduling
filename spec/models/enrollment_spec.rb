@@ -55,26 +55,56 @@ RSpec.describe Enrollment, type: :model do
       let(:student) { create(:student) }
       let(:subject1) { create(:subject) }
       let(:subject2) { create(:subject) }
+      let!(:existing_enrollment) {
+        create(:enrollment, student: student, subject: subject1,
+          section: overlapping_section1)
+      }
+      let(:new_enrollment) { build(:enrollment, student: student, subject: subject2, section: overlapping_section2) }
 
-      context "when there is a schedule overlap" do
+      shared_examples "schedule overlaps" do
+        it "is invalid" do
+          expect(new_enrollment).to be_invalid
+          expect(new_enrollment.errors[:base]).to include(a_string_matching(/overlaps with/))
+        end
+      end
+
+      context "when there is a schedule overlap based on start time" do
         let(:overlapping_section1) {
-          create(:section, start_time: "10:00", end_time: "11:00",
+          create(:section, start_time: "10:00", end_time: "11:20",
             days_of_week: :mon_wed_fri)
         }
         let(:overlapping_section2) {
-          create(:section, start_time: "10:30", end_time: "11:30",
+          create(:section, start_time: "10:30", end_time: "11:50",
             days_of_week: :mon_wed_fri)
         }
-        let!(:existing_enrollment) {
-          create(:enrollment, student: student, subject: subject1,
-            section: overlapping_section1)
-        }
-        let(:new_enrollment) { build(:enrollment, student: student, subject: subject2, section: overlapping_section2) }
 
-        it "is invalid" do
-          expect(new_enrollment).to be_invalid
-          expect(new_enrollment.errors[:base]).to include(a_string_matching(/This section overlaps with/))
-        end
+        it_behaves_like "schedule overlaps"
+      end
+
+      context "when there is a schedule overlap based on end time" do
+        let(:overlapping_section1) {
+          create(:section, start_time: "10:00", end_time: "11:20",
+            days_of_week: :mon_wed_fri)
+        }
+        let(:overlapping_section2) {
+          create(:section, start_time: "09:30", end_time: "10:50",
+            days_of_week: :mon_wed_fri)
+        }
+
+        it_behaves_like "schedule overlaps"
+      end
+
+      context "when there is a schedule overlap based on start and end times" do
+        let(:overlapping_section1) {
+          create(:section, start_time: "10:00", end_time: "11:20",
+            days_of_week: :mon_wed_fri)
+        }
+        let(:overlapping_section2) {
+          create(:section, start_time: "10:10", end_time: "11:00",
+            days_of_week: :mon_wed_fri)
+        }
+
+        it_behaves_like "schedule overlaps"
       end
 
       context "when there is no schedule overlap" do
