@@ -1,5 +1,5 @@
-module Students
-  class ScheduleDownloadsController < ApplicationController
+module Schedules
+  class DownloadsController < ApplicationController
     def download
       format = params[:format] || "pdf"
       result = generate_schedule(format)

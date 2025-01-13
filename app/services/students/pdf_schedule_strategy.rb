@@ -19,7 +19,7 @@ module Students
     def pdf_content
       WickedPdf.new.pdf_from_string(
         ApplicationController.render(
-          template: "students/schedule_downloads/show",
+          template: "schedules/downloads/show",
           layout: "pdf",
           locals: {student: student, enrollments: enrollments}
         )

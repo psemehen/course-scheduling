@@ -1,0 +1,28 @@
+<h1><%= student.full_name %>'s Schedule</h1>
+
+<% if enrollments.any? %>
+  <table>
+    <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Start time</th>
+      <th>End time</th>
+      <th>Teacher</th>
+      <th>Classroom</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% enrollments.each do |enrollment| %>
+      <tr>
+        <td><%= enrollment.subject.name %></td>
+        <td><%= enrollment.section.start_time.strftime("%I:%M %p") %></td>
+        <td><%= enrollment.section.end_time.strftime("%I:%M %p") %></td>
+        <td><%= enrollment.section.teacher.full_name %></td>
+        <td><%= enrollment.section.classroom.name %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No enrollments found.</p>
+<% end %>

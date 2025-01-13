@@ -1,14 +1,4 @@
 class EnrollmentsController < ApplicationController
-  def index
-    @enrollments = student.enrollments.includes(:subject, section: [:teacher, :classroom])
-    @available_sections = Section.includes(:subject, :teacher, :classroom).where.not(id: student.section_ids)
-
-    respond_to do |format|
-      format.html
-      format.json { render json: {enrollments: @enrollments, available_sections: @available_sections} }
-    end
-  end
-
   def create
     enrollment = student.enrollments.build(enrollment_params)
 
@@ -17,14 +7,14 @@ class EnrollmentsController < ApplicationController
         success_message = "Successfully enrolled in #{enrollment.subject.name} with #{enrollment.section.teacher.full_name}."
         format.html do
           flash[:success] = success_message
-          redirect_to student_enrollments_path(student)
+          redirect_to student_schedule_path(student)
         end
         format.json { render json: {enrollment: enrollment, message: success_message}, status: :created }
       else
         error_messages = enrollment.errors.full_messages.join(", ")
         format.html do
           flash[:error] = "Failed to enroll in section: #{error_messages}"
-          redirect_to student_enrollments_path(student)
+          redirect_to student_schedule_path(student)
         end
         format.json { render json: {errors: enrollment.errors.full_messages}, status: :unprocessable_entity }
       end
@@ -37,14 +27,14 @@ class EnrollmentsController < ApplicationController
         success_message = "Successfully unenrolled from section."
         format.html do
           flash[:success] = success_message
-          redirect_to student_enrollments_path(student)
+          redirect_to student_schedule_path(student)
         end
         format.json { render json: {message: success_message}, status: :ok }
       else
         error_message = "Failed to unenroll from section."
         format.html do
           flash[:error] = error_message
-          redirect_to student_enrollments_path(student)
+          redirect_to student_schedule_path(student)
         end
         format.json { render json: {error: error_message}, status: :unprocessable_entity }
       end

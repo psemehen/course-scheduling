@@ -1,7 +1,7 @@
-<h1 class="section-header"><%= @student.full_name %>'s Enrollments</h1>
+<h1 class="section-header"><%= @student.full_name %>'s Schedule</h1>
 
-<h2 class="section-header">Current Enrollments</h2>
-<%= link_to 'Download Schedule PDF', download_student_schedule_downloads_path(@student),
+<h2 class="section-header">Current Sections</h2>
+<%= link_to 'Download Schedule PDF', download_student_schedule_path(@student),
             class: 'download-pdf-button' %>
 
 <% if @enrollments.any? %>
@@ -19,7 +19,7 @@
     </tr>
     </thead>
     <tbody>
-    <%= render @enrollments %>
+      <%= render partial: 'enrollment', collection: @enrollments %>
     </tbody>
   </table>
 <% else %>
@@ -42,7 +42,7 @@
     </tr>
     </thead>
     <tbody>
-    <%= render partial: 'available_section', collection: @available_sections %>
+      <%= render partial: 'available_section', collection: @available_sections %>
     </tbody>
   </table>
 <% else %>

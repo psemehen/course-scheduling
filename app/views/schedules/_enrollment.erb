@@ -7,6 +7,6 @@
   <td><%= enrollment.section.end_time.strftime("%I:%M %p") %></td>
   <td><%= enrollment.section.duration %> minutes</td>
   <td>
-    <%= button_to 'Unenroll', student_enrollment_path(@student, enrollment), method: :delete, data: { confirm: 'Are you sure?' } %>
+    <%= button_to 'Unenroll', student_enrollment_path(@student, enrollment), method: :delete %>
   </td>
 </tr>
