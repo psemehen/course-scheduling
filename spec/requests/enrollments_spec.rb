@@ -5,7 +5,7 @@ RSpec.describe EnrollmentsController, type: :request do
   let(:section) { create(:section) }
   let(:subject) { create(:subject) }
 
-  describe "POST /students/:student_id/enrollments" do
+  describe "POST /schedules/:student_id/enrollments" do
     let(:valid_attributes) { {enrollment: {section_id: section.id, subject_id: section.subject.id}} }
 
     context "with valid parameters" do
@@ -32,7 +32,7 @@ RSpec.describe EnrollmentsController, type: :request do
     end
   end
 
-  describe "DELETE /students/:student_id/enrollments/:id" do
+  describe "DELETE /schedules/:student_id/enrollments/:id" do
     let!(:enrollment) { create(:enrollment, student: student) }
 
     it "destroys the requested enrollment" do

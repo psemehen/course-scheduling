@@ -1,4 +1,4 @@
-module Students
+module Schedules
   class PdfScheduleStrategy < BaseService
     def initialize(student)
       @student = student

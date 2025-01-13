@@ -14,7 +14,7 @@ module Schedules
 
     def generate_schedule(format)
       Rails.cache.fetch(cache_key(format), expires_in: 1.hour) do
-        Students::ScheduleDownloadService.call(student, format)
+        Schedules::GeneratorService.call(student, format)
       end
     end
 

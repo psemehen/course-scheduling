@@ -1,5 +1,5 @@
-module Students
-  class ScheduleDownloadService < BaseService
+module Schedules
+  class GeneratorService < BaseService
     def initialize(student, format)
       @student = student
       @format = format
