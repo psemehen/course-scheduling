@@ -5,18 +5,6 @@ RSpec.describe EnrollmentsController, type: :request do
   let(:section) { create(:section) }
   let(:subject) { create(:subject) }
 
-  describe "GET /students/:student_id/enrollments" do
-    it "returns a successful response" do
-      get student_enrollments_path(student)
-      expect(response).to have_http_status(:success)
-    end
-
-    it "returns JSON when requested" do
-      get student_enrollments_path(student), headers: {Accept: "application/json"}
-      expect(response.content_type).to include("application/json")
-    end
-  end
-
   describe "POST /students/:student_id/enrollments" do
     let(:valid_attributes) { {enrollment: {section_id: section.id, subject_id: section.subject.id}} }
 

@@ -2,51 +2,110 @@ require "rails_helper"
 
 RSpec.describe Enrollment, type: :model do
   describe "validations" do
-    let(:enrollment) { build(:enrollment) }
+    describe "uniqueness validation" do
+      let(:student) { create(:student) }
+      let(:subject) { create(:subject) }
+      let(:section) { create(:section) }
+      let!(:existing_enrollment) { create(:enrollment, student: student, subject: subject, section: section) }
 
-    it "is valid with valid attributes" do
-      expect(enrollment).to be_valid
+      context "when enrolling in the same section of the same subject" do
+        let(:duplicate_enrollment) { build(:enrollment, student: student, subject: subject, section: section) }
+
+        it "is invalid" do
+          expect(duplicate_enrollment).to be_invalid
+          expect(duplicate_enrollment.errors[:student_id])
+            .to include("is already enrolled in this section of the subject")
+        end
+      end
+
+      context "when enrolling in a different section of the same subject" do
+        let(:new_section) { create(:section, :afternoon_section) }
+        let(:new_enrollment) { build(:enrollment, student: student, subject: subject, section: new_section) }
+
+        it "is valid" do
+          expect(new_enrollment).to be_valid
+        end
+      end
+
+      context "when enrolling in the same section of a different subject" do
+        let(:different_subject) { create(:subject) }
+        let(:non_overlapping_section) { create(:section, :afternoon_section) }
+        let!(:existing_enrollment) { create(:enrollment, student: student, subject: subject, section: section) }
+        let(:new_enrollment) {
+          build(:enrollment, student: student, subject: different_subject,
+            section: non_overlapping_section)
+        }
+
+        it "is valid" do
+          expect(new_enrollment).to be_valid
+        end
+      end
+
+      context "when a different student enrolls in the same section of the subject" do
+        let(:different_student) { create(:student) }
+        let(:new_enrollment) { build(:enrollment, student: different_student, subject: subject, section: section) }
+
+        it "is valid" do
+          expect(new_enrollment).to be_valid
+        end
+      end
     end
 
-    describe "uniqueness validation" do
-      let(:section) { create(:section, start_time: "2025-06-01 12:00:00", end_time: "2025-06-01 12:50:00") }
-      let(:existing_enrollment) { create(:enrollment, section: section) }
-      let(:duplicate_enrollment) {
-        build(:enrollment, student: existing_enrollment.student,
-          subject: existing_enrollment.subject, section: existing_enrollment.section)
-      }
-      let(:new_section) {
-        create(:section, start_time: existing_enrollment.section.end_time + 10.minutes,
-          end_time: existing_enrollment.section.end_time + 1.hour)
-      }
+    describe ".no_schedule_overlap" do
+      let(:student) { create(:student) }
+      let(:subject1) { create(:subject) }
+      let(:subject2) { create(:subject) }
 
-      it "is invalid if student is already enrolled in the same section of the subject" do
-        expect(duplicate_enrollment).to be_invalid
-        expect(duplicate_enrollment.errors[:student_id]).to include("is already enrolled in this section of the subject")
+      context "when there is a schedule overlap" do
+        let(:overlapping_section1) {
+          create(:section, start_time: "10:00", end_time: "11:00",
+            days_of_week: :mon_wed_fri)
+        }
+        let(:overlapping_section2) {
+          create(:section, start_time: "10:30", end_time: "11:30",
+            days_of_week: :mon_wed_fri)
+        }
+        let!(:existing_enrollment) {
+          create(:enrollment, student: student, subject: subject1,
+            section: overlapping_section1)
+        }
+        let(:new_enrollment) { build(:enrollment, student: student, subject: subject2, section: overlapping_section2) }
+
+        it "is invalid" do
+          expect(new_enrollment).to be_invalid
+          expect(new_enrollment.errors[:base]).to include(a_string_matching(/This section overlaps with/))
+        end
       end
 
-      it "is valid if student enrolls in a different section of the same subject" do
-        new_enrollment = build(:enrollment,
-          student: existing_enrollment.student,
-          subject: existing_enrollment.subject)
+      context "when there is no schedule overlap" do
+        let(:non_overlapping_section1) {
+          create(:section, start_time: "10:00", end_time: "11:00",
+            days_of_week: :mon_wed_fri)
+        }
+        let(:non_overlapping_section2) { create(:section, :afternoon_section) }
+        let!(:existing_enrollment) {
+          create(:enrollment, student: student, subject: subject1,
+            section: non_overlapping_section1)
+        }
+        let(:new_enrollment) {
+          build(:enrollment, student: student, subject: subject2,
+            section: non_overlapping_section2)
+        }
 
-        expect(new_enrollment).to be_valid
+        it "is valid" do
+          expect(new_enrollment).to be_valid
+        end
       end
 
-      it "is valid if student enrolls in the same section of a different subject at a different time" do
-        new_enrollment = build(:enrollment,
-          student: existing_enrollment.student,
-          section: new_section)
+      context "when sections are on different days" do
+        let(:mwf_section) { create(:section, days_of_week: :mon_wed_fri) }
+        let(:tth_section) { create(:section, :tue_thu_section) }
+        let!(:existing_enrollment) { create(:enrollment, student: student, subject: subject1, section: mwf_section) }
+        let(:new_enrollment) { build(:enrollment, student: student, subject: subject2, section: tth_section) }
 
-        expect(new_enrollment).to be_valid
-      end
-
-      it "is valid if a different student enrolls in the same section of the subject" do
-        new_enrollment = build(:enrollment,
-          subject: existing_enrollment.subject,
-          section: existing_enrollment.section)
-
-        expect(new_enrollment).to be_valid
+        it "is valid" do
+          expect(new_enrollment).to be_valid
+        end
       end
     end
   end

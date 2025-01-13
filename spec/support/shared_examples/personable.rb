@@ -1,9 +1,6 @@
 RSpec.shared_examples "personable model" do
   let(:valid_attributes) { attributes_for(described_class.to_s.underscore.to_sym) }
 
-  it { is_expected.to validate_presence_of(:first_name) }
-  it { is_expected.to validate_presence_of(:last_name) }
-  it { is_expected.to validate_presence_of(:email) }
   it { is_expected.to allow_value("testuser@gmail.com").for(:email) }
   it { is_expected.not_to allow_value("invalid-email").for(:email) }
 

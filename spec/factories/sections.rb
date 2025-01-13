@@ -15,5 +15,15 @@ FactoryBot.define do
     trait :everyday_section do
       days_of_week { :everyday }
     end
+
+    trait :afternoon_section do
+      start_time { Time.zone.parse("2025-06-01 13:00:00") }
+      end_time { Time.zone.parse("2025-06-01 13:50:00") }
+    end
+
+    trait :evening_section do
+      start_time { Time.zone.parse("2025-06-01 18:00:00") }
+      end_time { Time.zone.parse("2025-06-01 18:50:00") }
+    end
   end
 end
